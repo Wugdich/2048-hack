@@ -30,11 +30,10 @@ def main():
     browser.maximize_window()
 
     htmlElem = browser.find_element(By.TAG_NAME, 'html')
-    status = None
+    status = 'Game on'
     # TODO: while not game over cycle
     # random directions test
-    for _ in range(100):
-        logging.info(f'{status} - iteration {_}')
+    while 'Game over!' not in status:
         direction = random.randint(0, 3)
         if direction == 0:
             htmlElem.send_keys(Keys.UP)
@@ -56,7 +55,7 @@ def main():
     # get total score in the end of the game
     score = 0
     print(f'Game over. Result - {score}')
-    browser.close()
+    # browser.close()
 
 
 if __name__=='__main__':
