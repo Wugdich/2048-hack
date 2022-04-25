@@ -43,7 +43,7 @@ def main():
             htmlElem.send_keys(Keys.LEFT)
         else:
             htmlElem.send_keys(Keys.RIGHT)
-        time.sleep(0.4)
+        time.sleep(0.2)
     
         # find element with class name game-message
         try:
@@ -53,9 +53,10 @@ def main():
             pass
         
     # get total score in the end of the game
-    score = 0
-    print(f'Game over. Result - {score}')
-    # browser.close()
+    score = browser.find_element(By.CLASS_NAME, 'scores-container').text
+    score = score[:score.find('\n')]
+    print(f'Game over. Total score - {score}')
+    browser.close()
 
 
 if __name__=='__main__':
