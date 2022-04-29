@@ -10,9 +10,29 @@ import time
 import random
 
 
-def get_field() -> list:
-    # class='tile-container'
-    pass
+def get_field(browser: object) -> list:
+    # get info about tiles
+    fieldElem = browser.find_elements(By.CLASS_NAME, 'tile')
+    tiles = [obj.get_attribute('class') for obj in fieldElem]
+
+    field = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+
+    for tile in tiles:
+        # TODO: more elegant unpacking
+        tile_data = tile.split()
+        tile_value = int(tile_data[1].split('-')[1])
+        x = int(tile_data[2].split('-')[2])
+        y = int(tile_data[2].split('-')[3])
+        
+        # add tile to field data
+        field[y - 1][x - 1] = tile_value 
+        
+    return field
 
 
 def next_move() -> str:
@@ -31,9 +51,18 @@ def main():
 
     htmlElem = browser.find_element(By.TAG_NAME, 'html')
     status = 'Game on'
-    # TODO: while not game over cycle
+    
     # random directions test
-    while 'Game over!' not in status:
+    for _ in range(10):
+    #while 'Game over!' not in status:
+        # print('*        *       *')
+        # for line in get_field(browser):
+        #     print('|', end='')
+        #     for value in line:
+        #         print(value, end=' ')
+        #     print('|', end='\n')
+        # print('*        *       *')
+
         direction = random.randint(0, 3)
         if direction == 0:
             htmlElem.send_keys(Keys.UP)
@@ -43,7 +72,7 @@ def main():
             htmlElem.send_keys(Keys.LEFT)
         else:
             htmlElem.send_keys(Keys.RIGHT)
-        time.sleep(0.2)
+        time.sleep(0.15)
     
         # find element with class name game-message
         try:
@@ -51,7 +80,7 @@ def main():
             status = statusElem.text
         except:
             pass
-        
+    
     # get total score in the end of the game
     score = browser.find_element(By.CLASS_NAME, 'scores-container').text
     score = score[:score.find('\n')]
@@ -61,3 +90,4 @@ def main():
 
 if __name__=='__main__':
     main()
+    
