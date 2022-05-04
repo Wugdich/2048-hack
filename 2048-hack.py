@@ -1,4 +1,4 @@
-#! python3
+#! python3 2048-hack.py
 # Program that winnig in the game named 2048
 # Game addres in web - https://play2048.co/
 
@@ -35,8 +35,75 @@ def get_field(browser: object) -> list:
     return field
 
 
-def next_move() -> str:
-    pass
+def grid_move(field: list) -> str:
+    # each non-empty cell
+    for y in range(4):
+        for x in range(4):
+            if field[y][x] != 0:
+                cur_value = field[y][x]
+                direction = ''
+                biggest_value = 0
+                # left side
+                for step in range(1, 4):
+                    try:
+                        comp_value = field[y][x - step]
+                    except:
+                        break
+                    if comp_value == 0:
+                        continue
+                    elif comp_value != cur_value:
+                        break
+                    if cur_value * 2 > biggest_value:
+                        biggest_value = cur_value * 2
+                        direction = 'left'
+
+                # up side
+                for step in range(1, 4):
+                    try:
+                        comp_value = field[y + step][x]
+                    except:
+                        break
+                    if comp_value == 0:
+                        continue
+                    elif comp_value != cur_value:
+                        break
+                    if cur_value * 2 > biggest_value:
+                        biggest_value = cur_value * 2
+                        direction = 'up'
+
+                # right side
+                for step in range(1, 4):
+                    try:
+                        comp_value = field[y][x + step]
+                    except:
+                        break
+                    if comp_value == 0:
+                        continue
+                    elif comp_value != cur_value:
+                        break 
+                    if cur_value * 2 > biggest_value:
+                            biggest_value = cur_value * 2
+                            direction = 'right'
+
+                # down side
+                for step in range(1, 4):
+                    try:
+                        comp_value = field[y - step][x]
+                    except:
+                        break
+                    if comp_value == 0:
+                        continue
+                    elif comp_value != cur_value:
+                        break
+                    if cur_value * 2 > biggest_value:
+                        biggest_value = cur_value * 2
+                        direction = 'down'
+                
+                if direction == '':
+                    direction = random.choice(['left', 'right', 'up', 'down'])
+    
+    return direction
+
 
 
 def main():
@@ -52,9 +119,8 @@ def main():
     htmlElem = browser.find_element(By.TAG_NAME, 'html')
     status = 'Game on'
     
-    # random directions test
-    for _ in range(10):
-    #while 'Game over!' not in status:
+    # for _ in range(10):
+    while 'Game over!' not in status:
         # print('*        *       *')
         # for line in get_field(browser):
         #     print('|', end='')
@@ -63,15 +129,17 @@ def main():
         #     print('|', end='\n')
         # print('*        *       *')
 
-        direction = random.randint(0, 3)
-        if direction == 0:
+        direction = grid_move(get_field(browser=browser))
+        if direction == 'up':
             htmlElem.send_keys(Keys.UP)
-        elif direction == 1:
+        elif direction == 'down':
             htmlElem.send_keys(Keys.DOWN)
-        elif direction == 2:
+        elif direction == 'left':
             htmlElem.send_keys(Keys.LEFT)
-        else:
+        elif direction == 'right':
             htmlElem.send_keys(Keys.RIGHT)
+        else:
+            print('Something went wrong!')
         time.sleep(0.15)
     
         # find element with class name game-message
@@ -90,4 +158,3 @@ def main():
 
 if __name__=='__main__':
     main()
-    
